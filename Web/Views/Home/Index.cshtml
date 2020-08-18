@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to the BizTalk 2020 Monitor </h1>
+   <p> This Web application will</p>
+   <ul class="list-group">
+       <li class="list-group-item">A plain Dashboard for all BizTalk Enviroment based on hostname</li>
+       <li class="list-group-item">Exception handling view</li>
+       <li class="list-group-item">Resubmission possibilities for BizTalk DevOps</li>
+      
+   </ul>
+    <p> But first you have to login for further possibilities</p>
+    @if (User.Identity.IsAuthenticated)
+    { 
+            <div class="list-group">
+                <button asp-controller="dashboard" asp-action="Index" type="button" class="list-group-item list-group-item-action">Dashboard</button>
+                <button asp-controller="devops" asp-action="Index" type="button" class="list-group-item list-group-item-action">DevOps BizTalk</button>
+               
+            </div>
+    }
+</div>
