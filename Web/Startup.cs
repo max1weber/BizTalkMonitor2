@@ -36,7 +36,7 @@ namespace BizTalk.Monitor.Web
 
             services.AddDbContext<EsbExceptionDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("BizTalkConnection")));
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
