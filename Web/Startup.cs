@@ -12,7 +12,7 @@ using BizTalk.Monitor.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Biztalk.Monitor.Data.Context;
+using BizTalk.Monitor.Data.Context;
 
 namespace BizTalk.Monitor.Web
 {
