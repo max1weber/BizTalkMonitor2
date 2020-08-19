@@ -1,0 +1,43 @@
+﻿@model BizTalk.Monitor.Web.Models.FaultDataViewModel
+
+@{
+    ViewData["Title"] = "FaultDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>FaultDetails</h1>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-fault-tab" data-toggle="tab" href="#nav-fault" role="tab" aria-controls="nav-fault" aria-selected="true">Fault</a>
+        <a class="nav-item nav-link" id="nav-message-tab" data-toggle="tab" href="#nav-message" role="tab" aria-controls="nav-message" aria-selected="false">Message Data</a>
+        <a class="nav-item nav-link" id="nav-context-tab" data-toggle="tabajax" data-target="nav-context"  href="#nav-context" role="tab" aria-controls="nav-context" aria-selected="false">Context</a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-fault" role="tabpanel" aria-labelledby="nav-fault-tab">
+
+       @{await Html.RenderPartialAsync("_FaultViewPartial", Model.Fault);}
+    </div>
+    <div class="tab-pane fade" id="nav-message" role="tabpanel" aria-labelledby="nav-message-tab">
+        @{await Html.RenderPartialAsync("_MessageViewPartial", Model.Message);}
+    </div>
+    <div class="tab-pane fade" id="nav-context" role="tabpanel" aria-labelledby="nav-context-tab">
+
+    </div>
+</div>
+
+
+<script>
+
+    $('[data-toggle="tabajax"]').click(function(e) {
+    e.preventDefault()
+    var loadurl = $(this).attr('href')
+    var targ = $(this).attr('data-target')
+    $.get(loadurl, function(data) {
+        $(targ).html(data)
+
+    });
+    $(this).tab('show')
+});
+</script>

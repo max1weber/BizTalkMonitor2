@@ -1,13 +1,9 @@
 ﻿using BizTalk.Monitor.Web.Models;
-using BizTalk.Monitor.Web.Models.ChartTypes;
+
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace BizTalk.Monitor.Web.ViewComponents
+namespace BizTalk.Monitor.Web.Views.Shared.Components.ChartJs
 {
 
     [ViewComponent(Name ="chartjs")]
@@ -55,7 +51,7 @@ namespace BizTalk.Monitor.Web.ViewComponents
                                 }
                             }";
 
-            var chart = JsonConvert.DeserializeObject<ChartJs>(chartData);
+            var chart = JsonConvert.DeserializeObject<BizTalk.Monitor.Web.Models.ChartTypes.ChartJs>(chartData);
 
             var chartModel = new ChartJsViewModel
             {

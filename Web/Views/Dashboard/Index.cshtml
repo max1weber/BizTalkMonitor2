@@ -1,43 +1,17 @@
 ﻿@model DashboardViewModel
 @{
     ViewData["Title"] = "Index";
- 
+
 }
 
 <h1>Main  Dashboard</h1>
 
 
 <div class="container">
-    <div class="tile wide resource">
-        <div class="header">
-            <div class="left">
-                <div class="count">@Model.TotalNumberOfFaults.ToString()</div>
-                <div class="title">Faults</div>
-            </div>
-            <div class="right">
-                <div class="count">@Model.TotalNumberOfProcessedFaults.ToString()</div>
-                <div class="title">Faults Processed</div>
-            </div>
-        </div>
-        <div class="body">
-            <div class="title">Total Numbers</div>
-        </div>
-    </div>
-    <div class="tile wide quote">
-        <div class="header">
-            <div class="left">
-                <div class="count">@Model.FaultsToday.ToString()</div>
-                <div class="title">Faults</div>
-            </div>
-            <div class="right">
-                <div class="count">@Model.FaultsProcessedToday.ToString()</div>
-                <div class="title">Faults Processed</div>
-            </div>
-        </div>
-        <div class="body">
-            <div class="title">Todays Numbers</div>
-        </div>
-    </div>
+    @foreach (var item in Model.TileViewModels)
+    {
+        @await Component.InvokeAsync("tile", new { tileViewModel = item })
+    }
 </div>
 <div class="container">
     <vc:chartjs></vc:chartjs>

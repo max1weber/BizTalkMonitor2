@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BizTalk.Monitor.Data.Context;
 using BizTalk.Monitor.Web.Models;
+using BizTalk.Monitor.Web.Models.TileType;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,16 +25,30 @@ namespace BizTalk.Monitor.Web.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             var lastdatetime = DateTime.Now.AddDays(-1);
-            DashboardViewModel model = new DashboardViewModel()
-            {
 
-                TotalNumberOfFaults = await _ctx.Fault.CountAsync(),
-                TotalNumberOfProcessedFaults = await _ctx.ProcessedFault.CountAsync(),
-                FaultsToday = _ctx.Fault.Where(p => p.DateTime.HasValue && (p.DateTime.Value.Date >= lastdatetime.Date)).Count(),
-                FaultsProcessedToday = _ctx.AuditLog.Where(p => p.AuditDate >= lastdatetime.Date).Count()
 
-            };
-            return View(model);
+            var totalNumberOfFaults = await _ctx.Fault.CountAsync();
+            var totalNumberOfProcessedFaults = await _ctx.ProcessedFault.CountAsync();
+            var faultsToday = _ctx.Fault.Where(p => p.InsertedDate >= lastdatetime.Date).Count();
+            var faultsProcessedToday = _ctx.AuditLog.Where(p => p.AuditDate >= lastdatetime.Date).Count();
+
+            ///data total tile
+            List<TileTypeContent> contentTotal = new List<TileTypeContent>();
+            contentTotal.Add(new TileTypeContent() { DisplayTitle = "Total Failures", DisplayValue = totalNumberOfFaults.ToString() });
+            contentTotal.Add(new TileTypeContent() { DisplayTitle = "Total Failures Processed", DisplayValue = totalNumberOfProcessedFaults.ToString() });
+            TileTypeViewModel totalTile = new TileTypeViewModel() { TileCssClass = "tile wide resource", TileTitle = "Total Numbers", Contents = contentTotal };
+
+            //data today tile
+            List<TileTypeContent> todayTotal = new List<TileTypeContent>();
+            todayTotal.Add(new TileTypeContent() { DisplayTitle = "Today Failures", DisplayValue = faultsToday.ToString() });
+            todayTotal.Add(new TileTypeContent() { DisplayTitle = "Today  Processed", DisplayValue = faultsProcessedToday.ToString() });
+            TileTypeViewModel todayTile = new TileTypeViewModel() { TileCssClass = "tile wide quote", TileTitle = "Total Today", Contents = todayTotal };
+
+            DashboardViewModel dashboardViewModel = new DashboardViewModel();
+            dashboardViewModel.TileViewModels.Add(totalTile);
+            dashboardViewModel.TileViewModels.Add(todayTile);
+
+            return View(dashboardViewModel);
         }
     }
 }
