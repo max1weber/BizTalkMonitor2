@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BizTalk.Monitor.Client;
+using BizTalk.Monitor.Client.Contracts;
 using BizTalk.Monitor.Data.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BizTalk.Monitor.Web.Controllers
 {
@@ -12,9 +15,11 @@ namespace BizTalk.Monitor.Web.Controllers
     public abstract class BaseController : Controller
     {
         internal EsbExceptionDbContext _ctx { get; private set; }
-        public BaseController(EsbExceptionDbContext context)
+        internal IApplicationsClient _appClient { get; private set; }
+        public BaseController(IServiceProvider serviceProvider)
         {
-            _ctx = context;
+            _appClient = serviceProvider.GetRequiredService<IApplicationsClient>();
+            _ctx = serviceProvider.GetService<EsbExceptionDbContext>();
         }
     }
 }

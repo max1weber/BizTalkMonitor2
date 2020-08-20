@@ -12,7 +12,7 @@ namespace BizTalk.Monitor.Web.Views.Shared.Components.Tile
     public class TileViewComponent : ViewComponent
     {
        
-        public async Task<IViewComponentResult> InvokeAsync(TileTypeViewModel tileViewModel)
+        public IViewComponentResult Invoke(TileTypeViewModel tileViewModel)
         {
 
 

@@ -1,4 +1,5 @@
-﻿using BizTalk.Monitor.Web.Models.TileType;
+﻿using BizTalk.Monitor.Client.Contracts;
+using BizTalk.Monitor.Web.Models.TileType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace BizTalk.Monitor.Web.Models
 
         public List<TileTypeViewModel> TileViewModels = new List<TileTypeViewModel>();
 
-
+        public Application[] BiztalkApps { get; set; }
     }
 }

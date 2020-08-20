@@ -13,6 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BizTalk.Monitor.Data.Context;
+using System.Net.Http;
+using BizTalk.Monitor.Client.Contracts;
+using BizTalk.Monitor.Client;
 
 namespace BizTalk.Monitor.Web
 {
@@ -28,6 +31,11 @@ namespace BizTalk.Monitor.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+           
+            services.AddTransient<HttpClient>(HttpClientFactory.Create);
+            services.AddTransient<IApplicationsClient, ApplicationsClient>();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -70,6 +78,19 @@ namespace BizTalk.Monitor.Web
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+        }
+
+
+        public static class HttpClientFactory
+        {
+            public static HttpClient Create(IServiceProvider serviceProvider)
+            {
+                IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                var biztalkApiServiceBaseUrl = configuration.GetValue<string>("BiztalkApiServiceBaseUrl"); 
+                var basicClient = new HttpClient(new HttpClientHandler() { UseDefaultCredentials = true }) { BaseAddress = new Uri(biztalkApiServiceBaseUrl) };
+
+                return basicClient;
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BizTalk.Monitor.Client;
 using BizTalk.Monitor.Data.Context;
 using BizTalk.Monitor.Web.Models;
 using BizTalk.Monitor.Web.Models.TileType;
@@ -16,15 +17,17 @@ namespace BizTalk.Monitor.Web.Controllers
     [Authorize]
     public class DashboardController : BaseController
     {
+        
 
-
-        public DashboardController(EsbExceptionDbContext context) : base(context)
+        public DashboardController(IServiceProvider provider) : base(provider)
         {
 
         }
         public async Task<IActionResult> IndexAsync()
         {
             var lastdatetime = DateTime.Now.AddDays(-1);
+            var appsResponse = await _appClient.GetAsync();
+
 
 
             var totalNumberOfFaults = await _ctx.Fault.CountAsync();
@@ -47,6 +50,12 @@ namespace BizTalk.Monitor.Web.Controllers
             DashboardViewModel dashboardViewModel = new DashboardViewModel();
             dashboardViewModel.TileViewModels.Add(totalTile);
             dashboardViewModel.TileViewModels.Add(todayTile);
+
+            if (appsResponse.StatusCode == 200)
+            {
+                var excludedApp = appsResponse.Result.Where(p => p.Status.Contains("NotApplicable", StringComparison.InvariantCultureIgnoreCase));
+                dashboardViewModel.BiztalkApps = appsResponse.Result.Except(excludedApp).ToArray();
+            }
 
             return View(dashboardViewModel);
         }

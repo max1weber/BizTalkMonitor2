@@ -85,7 +85,7 @@ body {
 
 * {
     font-family: 'Roboto', sans-serif;
-    font-size: 14px;
+    font-size: 1em;
 }
 
 
@@ -118,14 +118,15 @@ body {
     }
 
     .tile .header .count {
-        font-size: 48px;
+        font-size: 1.5em;
         text-align: center;
         padding: 10px 0 0;
     }
 
     .tile .header .title {
-        font-size: 20px;
+        font-size: 0.8em;
         text-align: center;
+        font-weight:700;
     }
 
     .tile .body {
@@ -137,7 +138,9 @@ body {
 
         .tile .body .title {
             text-align: center;
-            font-size: 20px;
+            font-size: 1em;
+            
+            font-weight:bold;
             padding-top: 2%;
         }
 

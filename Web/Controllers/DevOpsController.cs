@@ -16,7 +16,7 @@ namespace BizTalk.Monitor.Web.Controllers
     [Authorize]
     public class DevOpsController : BaseController
     {
-        public DevOpsController(EsbExceptionDbContext context):base(context)
+        public DevOpsController(IServiceProvider serviceProvider) :base(serviceProvider)
         {
             
         }
