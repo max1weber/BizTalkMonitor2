@@ -17,6 +17,8 @@ using System.Net.Http;
 using BizTalk.Monitor.Client.Contracts;
 using BizTalk.Monitor.Client;
 using System.Text;
+using BizTalk.Monitor.Web.Extensions;
+using BizTalk.Monitor.Web.Helpers;
 
 namespace BizTalk.Monitor.Web
 {
@@ -32,8 +34,10 @@ namespace BizTalk.Monitor.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-           
+            services.AddHttpContextAccessor();
+            services.AddMultiTenancy()
+                     .WithResolutionStrategy<HostResolutionStrategy>()
+                     .WithStore<TenantDbStore>();
             services.AddTransient<HttpClient>(HttpClientFactory.Create);
             services.AddTransient<IApplicationsClient, ApplicationsClient>();
 
@@ -46,6 +50,12 @@ namespace BizTalk.Monitor.Web
             services.AddDbContext<EsbExceptionDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("BizTalkConnection")));
+
+            services.AddMultiTenancy()
+                    .WithResolutionStrategy<HostResolutionStrategy>()
+                    .WithStore<TenantDbStore>();
+
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -66,7 +76,7 @@ namespace BizTalk.Monitor.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseMultiTenancy();
             app.UseRouting();
 
             app.UseAuthentication();
