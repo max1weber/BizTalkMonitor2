@@ -8,17 +8,14 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
-using BizTalk.Monitor.Web.Data;
+using WebMultiTennant.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using BizTalk.Monitor.Data.Context;
-using System.Net.Http;
-using BizTalk.Monitor.Client.Contracts;
-using BizTalk.Monitor.Client;
-using System.Text;
+using Finbuckle.MultiTenant;
+using Microsoft.Extensions.Options;
 
-namespace BizTalk.Monitor.Web
+namespace WebMultiTennant
 {
     public class Startup
     {
@@ -33,21 +30,27 @@ namespace BizTalk.Monitor.Web
         public void ConfigureServices(IServiceCollection services)
         {
 
-           
-            services.AddTransient<HttpClient>(HttpClientFactory.Create);
-            services.AddTransient<IApplicationsClient, ApplicationsClient>();
+          
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<TenantDbContext>(optionsTenant=> {
+
+                optionsTenant.UseSqlServer(Configuration.GetConnectionString("TenantConnection"));
+            });
+
+            services.AddDbContext<TenantDbContext>(options =>
+                    options.UseSqlServer(
+                    Configuration.GetConnectionString("TenantConnection")));
+
+            services.AddMultiTenant().WithRouteStrategy().WithEFCoreStore<TenantDbContext>().WithFallbackStrategy("defaultTenant"); ;
+           services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            services.AddDbContext<EsbExceptionDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("BizTalkConnection")));
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +67,8 @@ namespace BizTalk.Monitor.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseMultiTenant();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -76,25 +81,21 @@ namespace BizTalk.Monitor.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{__tenant__}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            this.SetupStore(app.ApplicationServices);
         }
 
 
-        public static class HttpClientFactory
+        private void SetupStore(IServiceProvider sp)
         {
-            public static HttpClient Create(IServiceProvider serviceProvider)
-            {
-                IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                var biztalkApiServiceBaseUrl = configuration.GetValue<string>("BiztalkService:ApiUrl"); 
-                var biztalkApiUsername = configuration.GetValue<string>("BiztalkService:Username");
-                var biztalkApiPassword = configuration.GetValue<string>("BiztalkService:Password");
-                var basicClient = new HttpClient( ) { BaseAddress = new Uri(biztalkApiServiceBaseUrl) };
-                var byteArray = Encoding.ASCII.GetBytes($"{biztalkApiUsername}:{biztalkApiPassword}");
-                basicClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-                return basicClient;
-            }
+            var scopeServices = sp.CreateScope().ServiceProvider;
+            var store = scopeServices.GetRequiredService<IMultiTenantStore>();
+
+            store.TryAddAsync(new TenantInfo("defaultTenant", "defaultTenant", "Default", "DefaultConnection", null)).Wait();
+          //  store.TryAddAsync(new TenantInfo("tenant-initech-341ojadsfa", "initech", "Initech LLC", "initech_conn_string", null)).Wait();
         }
     }
 }
