@@ -12,7 +12,13 @@ using BizTalk.Monitor.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Biztalk.Monitor.Data.Context;
+using BizTalk.Monitor.Data.Context;
+using System.Net.Http;
+using BizTalk.Monitor.Client.Contracts;
+using BizTalk.Monitor.Client;
+using System.Text;
+using BizTalk.Monitor.Web.Extensions;
+using BizTalk.Monitor.Web.Helpers;
 
 namespace BizTalk.Monitor.Web
 {
@@ -28,6 +34,13 @@ namespace BizTalk.Monitor.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddMultiTenancy()
+                     .WithResolutionStrategy<HostResolutionStrategy>()
+                     .WithStore<TenantDbStore>();
+            services.AddTransient<HttpClient>(HttpClientFactory.Create);
+            services.AddTransient<IApplicationsClient, ApplicationsClient>();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -36,7 +49,13 @@ namespace BizTalk.Monitor.Web
 
             services.AddDbContext<EsbExceptionDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("BizTalkConnection")));
+
+            services.AddMultiTenancy()
+                    .WithResolutionStrategy<HostResolutionStrategy>()
+                    .WithStore<TenantDbStore>();
+
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -57,7 +76,7 @@ namespace BizTalk.Monitor.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseMultiTenancy();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -70,6 +89,22 @@ namespace BizTalk.Monitor.Web
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+        }
+
+
+        public static class HttpClientFactory
+        {
+            public static HttpClient Create(IServiceProvider serviceProvider)
+            {
+                IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                var biztalkApiServiceBaseUrl = configuration.GetValue<string>("BiztalkService:ApiUrl"); 
+                var biztalkApiUsername = configuration.GetValue<string>("BiztalkService:Username");
+                var biztalkApiPassword = configuration.GetValue<string>("BiztalkService:Password");
+                var basicClient = new HttpClient( ) { BaseAddress = new Uri(biztalkApiServiceBaseUrl) };
+                var byteArray = Encoding.ASCII.GetBytes($"{biztalkApiUsername}:{biztalkApiPassword}");
+                basicClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                return basicClient;
+            }
         }
     }
 }

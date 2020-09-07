@@ -1,0 +1,19 @@
+﻿
+@model BizTalk.Monitor.Web.Models.ApplicationTileType.ApplicationTileModel
+
+
+<div class="tile wide job" >
+    <div class="header">
+        <div class="left">
+            <div class="count">@Model.Errors.ToString()</div>
+            <div class="title">Faults</div>
+        </div>
+        <div class="right">
+            <div class="count">@Model.Status</div>
+            <div class="title">Biztalk Status</div>
+        </div>
+    </div>
+    <div class="body">
+        <div class="title">Application  @Model.Name</div>
+    </div>
+</div>

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>Biztalk.Monitor.Data</AssemblyName>
-    <RootNamespace>Biztalk.Monitor.Data</RootNamespace>
+    <AssemblyName>BizTalk.Monitor.Data</AssemblyName>
+    <RootNamespace>BizTalk.Monitor.Data</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

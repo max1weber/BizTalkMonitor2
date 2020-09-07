@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Biztalk.Monitor.Data.Entities;
+using BizTalk.Monitor.Data.Entities;
 
-namespace Biztalk.Monitor.Data.Context
+namespace BizTalk.Monitor.Data.Context
 {
     public partial class EsbExceptionDbContext : DbContext
     {

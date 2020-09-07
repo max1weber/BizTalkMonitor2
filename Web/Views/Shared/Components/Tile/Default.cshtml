@@ -1,0 +1,18 @@
+﻿@model BizTalk.Monitor.Web.Models.TileType.TileTypeViewModel
+
+<div class="@Model.TileCssClass">
+    <div class="body">
+        <div class="title">@Model.TileTitle</div>
+    </div>
+    <div class="header">
+        <div class="left">
+            <div class="count">@Model.Contents.First().DisplayValue</div>
+            <div class="title">@Model.Contents.First().DisplayTitle</div>
+        </div>
+        <div class="right">
+            <div class="count">@Model.Contents.Last().DisplayValue</div>
+            <div class="title">@Model.Contents.Last().DisplayTitle</div>
+        </div>
+    </div>
+
+</div>

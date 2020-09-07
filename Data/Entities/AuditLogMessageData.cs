@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Biztalk.Monitor.Data.Entities
+namespace BizTalk.Monitor.Data.Entities
 {
     public partial class AuditLogMessageData
     {

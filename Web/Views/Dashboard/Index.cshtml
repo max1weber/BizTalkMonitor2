@@ -1,0 +1,25 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Index";
+
+}
+
+<h1>Main  Dashboard</h1>
+
+
+<div class="container">
+    @foreach (var item in Model.TileViewModels)
+    {
+        @await Component.InvokeAsync("tile", new { tileViewModel = item })
+
+        
+    }
+    @foreach (var appItem in Model.BiztalkApps)
+    {
+        @await Component.InvokeAsync("ApplicationTile", new { app = appItem })
+    }
+
+</div>
+<div class="container">
+    <vc:chartjs></vc:chartjs>
+ </div>
