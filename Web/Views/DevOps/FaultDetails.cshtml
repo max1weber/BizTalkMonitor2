@@ -5,39 +5,59 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>FaultDetails</h1>
+<h1>Fault Details</h1>
 
+<hr />
+<button class="btn btn-primary" asp-action="EditMessage" asp-route-id="@Model.Message.MessageId" onclick="editMessage(event); return false;">Resubmit...</button>
+
+<hr/>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a class="nav-item nav-link active" id="nav-fault-tab" data-toggle="tab" href="#nav-fault" role="tab" aria-controls="nav-fault" aria-selected="true">Fault</a>
         <a class="nav-item nav-link" id="nav-message-tab" data-toggle="tab" href="#nav-message" role="tab" aria-controls="nav-message" aria-selected="false">Message Data</a>
-        <a class="nav-item nav-link" id="nav-context-tab" data-toggle="tabajax" data-target="nav-context"  href="#nav-context" role="tab" aria-controls="nav-context" aria-selected="false">Context</a>
+        <a class="nav-item nav-link" id="nav-context-tab" data-toggle="tab" href="#nav-context" role="tab" aria-controls="nav-context" aria-selected="false">Context</a>
+
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane fade show active" id="nav-fault" role="tabpanel" aria-labelledby="nav-fault-tab">
 
-       @{await Html.RenderPartialAsync("_FaultViewPartial", Model.Fault);}
+        @{await Html.RenderPartialAsync("_FaultViewPartial", Model.Fault);}
     </div>
     <div class="tab-pane fade" id="nav-message" role="tabpanel" aria-labelledby="nav-message-tab">
         @{await Html.RenderPartialAsync("_MessageViewPartial", Model.Message);}
     </div>
     <div class="tab-pane fade" id="nav-context" role="tabpanel" aria-labelledby="nav-context-tab">
-
+        @{await Html.RenderPartialAsync("_ContextPropertiesPartial", Model.Properties);}
     </div>
+
+
+
+
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            console.log("Datatable started");
+            $('#dtProperties').DataTable({
+                "scrollY": "750px",
+                "scrollCollapse": true,
+            });
+            $('.dataTables_length').addClass('bs-select');
 
 
-<script>
+        });
 
-    $('[data-toggle="tabajax"]').click(function(e) {
-    e.preventDefault()
-    var loadurl = $(this).attr('href')
-    var targ = $(this).attr('data-target')
-    $.get(loadurl, function(data) {
-        $(targ).html(data)
+        function editMessage(e) {
+            //doing custom things with myVal
+            console.log("Edit & Resubmit Message to be implemented!");
+            alert("'Edit & Resubmit Message to be implemented!");
 
-    });
-    $(this).tab('show')
-});
-</script>
+            e = e || window.event;
+            e.preventDefault();
+
+        }
+
+    </script>
+}
+

@@ -38,7 +38,14 @@ namespace BizTalk.Monitor.Web.Controllers
             if (fault != null)
             {
                 var message = await _ctx.Message.FirstOrDefaultAsync(p => p.FaultId.Equals(id));
-                fdvm.Message = message;
+                fdvm.AssignMessage(message);
+
+                var contextProperties = _ctx.ContextProperty.AsNoTracking().OrderBy(p=>p.Name).Where(p => p.MessageId.Equals(message.MessageId));
+                fdvm.Properties = contextProperties;
+
+                var content = await _ctx.MessageData.FirstOrDefaultAsync(p => p.MessageId.Equals(message.MessageId));
+                fdvm.AssignMessageContent(content);
+
             }
 
             

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<BizTalk.Monitor.Data.Entities.ContextProperty>
+
+<p>
+    <h2>ContextProperties</h2>
+</p>
+<table id="dtProperties" class="table table-striped">
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Value)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InsertedDate)
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InsertedDate)
+                </td>
+                
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

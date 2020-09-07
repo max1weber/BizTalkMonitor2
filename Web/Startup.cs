@@ -35,9 +35,9 @@ namespace BizTalk.Monitor.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            services.AddMultiTenancy()
-                     .WithResolutionStrategy<HostResolutionStrategy>()
-                     .WithStore<TenantDbStore>();
+            //services.AddMultiTenancy()
+            //         .WithResolutionStrategy<HostResolutionStrategy>()
+            //         .WithStore<TenantDbStore>();
             services.AddTransient<HttpClient>(HttpClientFactory.Create);
             services.AddTransient<IApplicationsClient, ApplicationsClient>();
 
@@ -51,9 +51,7 @@ namespace BizTalk.Monitor.Web
                 options.UseSqlServer(
                     Configuration.GetConnectionString("BizTalkConnection")));
 
-            services.AddMultiTenancy()
-                    .WithResolutionStrategy<HostResolutionStrategy>()
-                    .WithStore<TenantDbStore>();
+           
 
 
             services.AddControllersWithViews();
@@ -76,7 +74,7 @@ namespace BizTalk.Monitor.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseMultiTenancy();
+           // app.UseMultiTenancy();
             app.UseRouting();
 
             app.UseAuthentication();

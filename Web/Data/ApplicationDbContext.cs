@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text;
 using BizTalk.Monitor.Web.Models.Tenant;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -15,8 +16,11 @@ namespace BizTalk.Monitor.Web.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
+            
         }
 
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
